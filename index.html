@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estaciones Policiales Cercanas</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 30px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #0056b3; color: white; border: none; cursor: pointer; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { background: #f4f4f4; margin-bottom: 10px; padding: 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h2>Buscar Estaciones Policiales</h2>
+    <div class="form-group">
+        <label>Latitud:</label>
+        <input type="number" step="any" id="lat" value="14.0818">
+    </div>
+    <div class="form-group">
+        <label>Longitud:</label>
+        <input type="number" step="any" id="lon" value="-87.1921">
+    </div>
+    <div class="form-group">
+        <label>Límite de resultados:</label>
+        <input type="number" id="limite" value="3">
+    </div>
+    <button onclick="buscarEstaciones()">Buscar</button>
+
+    <ul id="resultados"></ul>
+
+    <script>
+        async function buscarEstaciones() {
+            const lat = document.getElementById('lat').value;
+            const lon = document.getElementById('lon').value;
+            const limite = document.getElementById('limite').value;
+            const lista = document.getElementById('resultados');
+            
+            lista.innerHTML = 'Cargando...';
+
+            // Cambia localhost por la URL de Render cuando la tengas desplegada
+            const API_URL = `http://127.0.0.1:5000/estaciones?lat=${lat}&lon=${lon}&limite=${limite}`;
+
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                lista.innerHTML = '';
+                data.forEach(est => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${est.nombre}</strong><br>Distancia: ${est.distancia_km} km`;
+                    lista.appendChild(li);
+                });
+            } catch (error) {
+                lista.innerHTML = '<li>Error al obtener los datos.</li>';
+            }
+        }
+    </script>
+</body>
+</html>
