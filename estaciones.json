@@ -1,7 +1,9 @@
 [
+  { "nombre": "Estación Policial Departamental #16 - Santa Bárbara", "lat": 14.9194, "lon": -88.2361 },
+  { "nombre": "Posta Policial - Trinidad", "lat": 15.1333, "lon": -88.2333 },
+  { "nombre": "Posta Policial - Ilama", "lat": 15.0333, "lon": -88.2167 },
+  { "nombre": "Posta Policial - Quimistán", "lat": 15.3500, "lon": -88.4000 },
+  { "nombre": "Posta Policial - Las Vegas", "lat": 14.8667, "lon": -88.0667 },
   { "nombre": "Estación Central - Tegucigalpa", "lat": 14.0818, "lon": -87.1921 },
-  { "nombre": "Estación Norte - Comayagüela", "lat": 14.1090, "lon": -87.2060 },
-  { "nombre": "Estación Sur - Loarque", "lat": 14.0320, "lon": -87.2100 },
-  { "nombre": "Estación Kennedy", "lat": 14.0650, "lon": -87.1650 },
-  { "nombre": "Estación El Manchen", "lat": 14.0980, "lon": -87.1820 }
+  { "nombre": "Estación Norte - Comayagüela", "lat": 14.1090, "lon": -87.2060 }
 ]
