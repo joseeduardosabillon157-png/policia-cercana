@@ -1,14 +1,15 @@
+import os
 import json
 import math
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Permite peticiones desde el frontend (HTML)
+CORS(app)  
 
 def haversine(lat1, lon1, lat2, lon2):
-    """Calcula la distancia en kilómetros entre dos coordenadas."""
-    R = 6371.0  # Radio de la Tierra en km
+    """Calcula la distancia en kilómetros entre dos coordenadas usando la fórmula del Haversine."""
+    R = 6371.0  
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
     a = (math.sin(dlat / 2) ** 2 +
@@ -17,26 +18,38 @@ def haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
+@app.route('/', methods=['GET'])
+def inicio():
+    return jsonify({
+        "mensaje": "API de Estaciones Policiales activa. Usa el endpoint /estaciones para consultar.",
+        "ejemplo": "/estaciones?lat=14.0818&lon=-87.1921&limite=3"
+    })
+
 @app.route('/estaciones', methods=['GET'])
 def obtener_estaciones():
     try:
-        user_lat = float(request.args.get('lat'))
-        user_lon = float(request.args.get('lon'))
-        limite = int(request.args.get('limite', 3))
-    except (TypeError, ValueError):
-        return jsonify({"error": "Parámetros 'lat' y 'lon' son requeridos y deben ser números."}), 400
 
-    with open('estaciones.json', 'r', encoding='utf-8') as f:
+        lat_raw = str(request.args.get('lat', '')).replace(',', '.')
+        lon_raw = str(request.args.get('lon', '')).replace(',', '.')
+        limite_raw = str(request.args.get('limite', '3'))
+
+        user_lat = float(lat_raw)
+        user_lon = float(lon_raw)
+        limite = int(limite_raw)
+    except (TypeError, ValueError):
+        return jsonify({"error": "Parámetros 'lat' y 'lon' son requeridos y deben ser números válidos."}), 400
+
+    ruta_json = os.path.join(os.path.dirname(__file__), 'estaciones.json')
+    with open(ruta_json, 'r', encoding='utf-8') as f:
         estaciones = json.load(f)
 
-    # Calcular distancia para cada estación
     for est in estaciones:
         est['distancia_km'] = round(haversine(user_lat, user_lon, est['lat'], est['lon']), 2)
 
-    # Ordenar por distancia y limitar
     estaciones_ordenadas = sorted(estaciones, key=lambda x: x['distancia_km'])[:limite]
 
     return jsonify(estaciones_ordenadas)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
