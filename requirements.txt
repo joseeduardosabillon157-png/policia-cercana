@@ -1,3 +1,5 @@
 Flask
 flask-cors
 gunicorn
+streamlit
+streamlit-js-eval
